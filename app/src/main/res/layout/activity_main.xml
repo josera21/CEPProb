@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context="com.example.josera.cepprob.MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/txtD"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Demanda"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/txtK"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Costo fijo (K)"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/txtH"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Costo Almacenamiento (H)"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/txtP"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Costo de Penalizacion (P)"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/txtE"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="E(x)"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/txtA"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="A"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/txtB"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="top"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="B"
+                android:inputType="numberDecimal"
+                android:padding="5dp" />
+
+
+            <TextView
+                android:id="@+id/txtLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:breakStrategy="balanced"
+                android:fitsSystemWindows="true"
+                android:gravity="top"
+                android:padding="5dp"
+                android:text="CEP Optimo"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+            <TextView
+                android:id="@+id/txtResult"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:breakStrategy="balanced"
+                android:fitsSystemWindows="true"
+                android:gravity="top"
+                android:padding="5dp"
+                android:text="Y optimo"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+
+            <TextView
+                android:id="@+id/txtDesc"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginTop="1dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:padding="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/btnCal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/colorPrimaryDark"
+                android:elevation="4dp"
+                android:paddingLeft="70dp"
+                android:paddingRight="70dp"
+                android:layout_marginBottom="25dp"
+                android:layout_marginTop="10dp"
+                android:text="Calcular"
+                android:textColor="#fff" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
