@@ -1,19 +1,15 @@
 package com.example.josera.cepprob;
 
-import android.app.Dialog;
-import android.support.v4.content.SharedPreferencesCompat;
-import android.support.v7.app.AlertDialog;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +23,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText txtE;
     private EditText txtA;
     private EditText txtB;
-    private TextView txtResult;
+    private TextView txtYi;
+    private TextView txtRi;
     private TextView txtDesc;
 
     // Para calculos
-    double d, k, h, p, e, a, b;
+    double d, k, h, p, e, a, b, fx;
     double yiOptimo, RiOptimo;
     private List<String> listR = new ArrayList<>();
 
@@ -46,32 +43,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtE = (EditText) findViewById(R.id.txtE);
         txtA = (EditText) findViewById(R.id.txtA);
         txtB = (EditText) findViewById(R.id.txtB);
-        txtResult = (TextView) findViewById(R.id.txtResult);
+        txtYi = (TextView) findViewById(R.id.txtYi);
+        txtRi = (TextView) findViewById(R.id.txtRi);
         txtDesc = (TextView) findViewById(R.id.txtDesc);
-        Button btnCal = (Button) findViewById(R.id.btnCal);
+        FloatingActionButton btnCal = (FloatingActionButton) findViewById(R.id.btnCal);
 
         btnCal.setOnClickListener(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        DialogSalir dialog = new DialogSalir();
+        dialog.show(fm, "TagSalir");
+    }
 
     @Override
     public void onClick(View view) {
-        if (haySolFactibles()) {
-            correrPasos();
-            String yi = String.valueOf(yiOptimo);
-            String ri = String.valueOf(RiOptimo);
-
-            txtResult.setText("Yi*: " + yi + " Ri: " + ri);
-            txtDesc.setText("Pedir " +yi+ " unidades cuando el inventario baje a "+ri);
-            txtDesc.setVisibility(View.VISIBLE);
-
-            for (String r : listR) {
-                Log.i("R: ", r);
-            }
+        if (emptyFields(txtD, txtK, txtH, txtP, txtE, txtA, txtB)) {
+            dialogEmpty();
         }
         else {
-            Toast.makeText(this,"No hay soluciones Factibles.",Toast.LENGTH_LONG).show();
-            txtResult.setText(String.valueOf(calHYsobrePD(316.23)));
+            calFx();
+            if (isZero(h, d, fx)) {
+                snackZeroValues();
+            }
+            else {
+                if (haySolFactibles()) {
+                    calFx();
+                    correrPasos();
+                    String yi = String.valueOf(yiOptimo);
+                    String ri = String.valueOf(RiOptimo);
+
+                    txtYi.setText("Yi*: " + yi);
+                    txtRi.setText("Ri*: " + ri);
+                    txtDesc.setText("Pedir " +yi+ " unidades siempre que el nivel de existencias baje a "+ri);
+                    txtDesc.setVisibility(View.VISIBLE);
+
+                    for (String r : listR) {
+                        Log.i("R: ", r);
+                    }
+                }
+                else {
+                    Toast.makeText(this,"No hay soluciones Factibles.",Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
 
@@ -85,42 +101,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         b = Float.parseFloat(String.valueOf(txtB.getText()));
     }
 
-    private double calOptimo(double s) {
+    private void calFx() {
         getDatos();
+        if (b > a)
+            fx = b - a;
+        else
+            fx = 0;
+    }
+
+    private double calOptimo(double s) {
         double raiz = Math.sqrt((2*d*(k + p*s))/h);
         return Math.round(raiz * 1000000.0) / 1000000.0;
     }
 
     private double calYChapo() {
-        getDatos();
-
         return Math.sqrt((2*d*(k + p*e))/h);
     }
 
     private double calYRaya() {
-        getDatos();
-
         return (p*d)/h;
     }
 
     private double calHYsobrePD(double y) {
-        getDatos();
         return (h*y)/(p*d);
     }
 
     private double calR(double y) {
-        getDatos();
-        double R = ((calHYsobrePD(y) - 1)*b)*(-1);
+        double R = ((calHYsobrePD(y) - 1)*fx)*(-1);
         return Math.round(R * 1000000.0) / 1000000.0;
     }
 
     private double calS(double R) {
-        getDatos();
-        double S = ((Math.pow(R,2)) / (b*2) - (R) + (b/2));
+        double S = ((Math.pow(R,2)) / (fx*2) - (R) + (fx/2));
         return Math.round(S * 1000000.0) / 1000000.0;
     }
 
-    // Hace mal el calculo
     private boolean aproximacion(double Ri, double RiAnt) {
         double diff = Math.round((RiAnt - Ri)*1000000.0)/ 1000000.0;
 
@@ -139,6 +154,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         double RiAnt = 0;
         double S;
         boolean seguir = true;
+
+        getDatos();
 
         while (seguir && i < 20) {
             if (i == 0) {
@@ -167,9 +184,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private boolean haySolFactibles() {
+        getDatos();
         double yChapo = calYChapo();
         double yRaya = calYRaya();
 
         return yRaya > yChapo;
+    }
+
+    private boolean emptyFields(EditText... edt) {
+        for(EditText textField : edt) {
+            if(textField.getText().length() == 0) {
+                return true;
+            }
+        }
+        return  false;
+    }
+
+    private boolean isZero(double... args) {
+        for(double val : args) {
+            if (val == 0)
+                return true;
+        }
+        return false;
+    }
+
+    public void dialogEmpty() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        DialogEmpty empty = new DialogEmpty();
+        empty.show(fragmentManager, "TagEmpty");
+    }
+
+    public void snackZeroValues() {
+        Snackbar snackbar = Snackbar
+                .make(findViewById(R.id.coordinatorLayout), "Hay datos incorrectos.", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }
