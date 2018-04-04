@@ -133,7 +133,5 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:visibility="invisible" />
         </LinearLayout>
-
     </ScrollView>
-
 </android.support.design.widget.CoordinatorLayout>

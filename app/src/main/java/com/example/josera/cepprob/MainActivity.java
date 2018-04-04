@@ -72,13 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (haySolFactibles()) {
                     calFx();
                     correrPasos();
-                    String yi = String.valueOf(yiOptimo);
-                    String ri = String.valueOf(RiOptimo);
-
-                    txtYi.setText("Yi*: " + yi);
-                    txtRi.setText("Ri*: " + ri);
-                    txtDesc.setText("Pedir " +yi+ " unidades siempre que el nivel de existencias baje a "+ri);
-                    txtDesc.setVisibility(View.VISIBLE);
+                    mostrarResultados();
 
                     for (String r : listR) {
                         Log.i("R: ", r);
@@ -101,6 +95,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         b = Float.parseFloat(String.valueOf(txtB.getText()));
     }
 
+    private void mostrarResultados() {
+        // Truncando el resultado a seis decimales.
+        String yi = String.valueOf(Math.round(yiOptimo*1000000.0)/1000000.0);
+        String ri = String.valueOf(Math.round(RiOptimo*1000000.0)/1000000.0);
+
+        txtYi.setText("Yi*: " + yi);
+        txtRi.setText("Ri*: " + ri);
+        txtDesc.setText("Pedir " +yi+ " unidades siempre que el nivel de existencias baje a "+ri);
+        txtDesc.setVisibility(View.VISIBLE);
+    }
+
     private void calFx() {
         getDatos();
         if (b > a)
@@ -110,8 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private double calOptimo(double s) {
-        double raiz = Math.sqrt((2*d*(k + p*s))/h);
-        return Math.round(raiz * 1000000.0) / 1000000.0;
+        return Math.sqrt((2*d*(k + p*s))/h);
     }
 
     private double calYChapo() {
@@ -127,13 +131,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private double calR(double y) {
-        double R = ((calHYsobrePD(y) - 1)*fx)*(-1);
-        return Math.round(R * 1000000.0) / 1000000.0;
+        return ((calHYsobrePD(y) - 1)*fx)*(-1);
     }
 
     private double calS(double R) {
-        double S = ((Math.pow(R,2)) / (fx*2) - (R) + (fx/2));
-        return Math.round(S * 1000000.0) / 1000000.0;
+        return ((Math.pow(R,2)) / (fx*2) - (R) + (fx/2));
     }
 
     private boolean aproximacion(double Ri, double RiAnt) {
